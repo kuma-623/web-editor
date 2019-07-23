@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="css/icon/icon.css">
+  <link rel="stylesheet" href="css/main.min.css">
+
+  <style id="root-style"></style>
+  <title>rabbit</title>
+</head>
+
+<body>
+  <div id="app" class="app">
+    <header class="header">
+      <div id="tab-container" class='tab-container'>
+        <button class="tab" data-name="index.html"><span>index.html</span></button>
+      </div>
+      <button id="add-tab">
+        <i class="material-icons">add</i>
+      </button>
+      <label class="button">
+        <i class="material-icons">description</i>
+        <input id="upload" type="file">
+      </label>
+      <button id="modules">
+        <i class="material-icons">extension</i>
+      </button>
+      <ul id="module-list" class="module-list module-list-hide">
+      </ul>
+    </header>
+    <main id="main" class="main">
+      <div id="ace" class='ace'></div>
+    </main>
+    <footer class="footer">
+      <label>
+        <span>自動補完</span>
+        <label class="check">
+          <input id="autocompleat" type="checkbox">
+          <span></span>
+        </label>
+      </label>
+      <select id="syntax"></select>
+      <button id="run">
+        <i class="material-icons">play_arrow</i>
+      </button>
+      <button id="build">
+        <i class="material-icons">get_app</i>
+      </button>
+    </footer>
+  </div>
+  <script src="js/ace/ace.js"></script>
+  <script src="js/ace/ext-language_tools.js"></script>
+  <script src="js/sworker/sworker.js"></script>
+  <script src="js/storage/storage.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
