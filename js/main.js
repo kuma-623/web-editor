@@ -331,7 +331,6 @@ if (storage) {
       const ext = beforeName.split('.').pop().toLowerCase()
       if (ext === 'css') {
         const exp = new RegExp(`( |\t)*<link rel="stylesheet" href="${beforeName}">\n`)
-        console.log(exp)
         saveFiles['index.html'] = saveFiles['index.html'].replace(exp, '')
       } else if (ext === 'js') {
         const exp = new RegExp(`( |\t)*<script src="${beforeName}"><\/script>\n`)
