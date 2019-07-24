@@ -525,7 +525,6 @@ if (storage) {
             }
             if (!/(?:https?:)?\/\//.test(src)) {
               replace = `<script>${saveFiles[src]}</script>`
-              alert(saveFiles[src])
             }
           }
         }
@@ -568,7 +567,7 @@ if (storage) {
     const url = URL.createObjectURL(new Blob([res], { type: 'text/html' }))
     const a = document.createElement('a')
     a.href = url
-    a.download = true
+    a.download = 'index.html'
     a.click()
     a.remove()
   })
