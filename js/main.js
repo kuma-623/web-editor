@@ -527,7 +527,6 @@ if (storage) {
           const hrefHead = node.match(/href[\r\n\t ]*=[\r\n\t ]*["']?/)
           if (hrefHead) {
             let href = node.match(/[^`'"\/\\\[\]:;|=,]*\.css/)
-            alert(node, href)
             if (href) {
               href = href[0]
             }
