@@ -255,27 +255,7 @@ if (storage) {
   })(saveFiles, editor)
 
 
-  const nameChangeEvent = (tab, beforeName) => {
-    return (e) => {
-      const target = e.currentTarget
-      const value = target.value
-      tab.dataset.name = value
-
-      if (value in saveFiles) {
-        console.log('onazi')
-        target.value = beforeName
-        return
-      }
-
-      delete saveFiles[beforeName]
-      saveFiles[value] = editor.value
-
-      beforeName = value
-    }
-  }
-
-
-  const addTab = (name) => {
+  function addTab(name) {
     const tabContainer = document.getElementById('tab-container')
     const tab = document.createElement('button')
     tab.classList.add('tab')
@@ -325,12 +305,51 @@ if (storage) {
     return tab
   }
 
-  const insertTag = (name) => {
+
+  function nameChangeEvent(tab, beforeName) {
+    return (e) => {
+      const target = e.currentTarget
+      const value = target.value
+      tab.dataset.name = value
+
+      if (value in saveFiles) {
+        alert('その名前は既に存在しています')
+        target.value = beforeName
+        return
+      }
+
+      if (/[`'"\/\\\[\]:;|=,]/.test(value)) {
+        alert('その名前は使用出来ません')
+        target.value = beforeName
+        return
+      }
+
+      delete saveFiles[beforeName]
+      saveFiles[value] = editor.value
+
+
+      const ext = beforeName.split('.').pop().toLowerCase()
+      if (ext === 'css') {
+        const exp = new RegExp(`( |\t)*<link rel="stylesheet" href="${beforeName}">\n`)
+        console.log(exp)
+        saveFiles['index.html'] = saveFiles['index.html'].replace(exp, '')
+      } else if (ext === 'js') {
+        const exp = new RegExp(`( |\t)*<script src="${beforeName}"><\/script>\n`)
+        saveFiles['index.html'] = saveFiles['index.html'].replace(exp, '')
+      }
+      insertTag(value)
+
+      beforeName = value
+    }
+  }
+
+
+  function insertTag(name) {
     const ext = name.split('.').pop().toLowerCase()
     if (ext === 'css') {
-      saveFiles['index.html'] = saveFiles['index.html'].replace(/( |\t)*<\/head>/, `$1<link rel=stylesheet href='${name}'>\n$1</head>`)
+      saveFiles['index.html'] = saveFiles['index.html'].replace(/( |\t)*<\/head>/, `$1 <link rel="stylesheet" href="${name}">\n$1</head>`)
     } else if (ext === 'js') {
-      saveFiles['index.html'] = saveFiles['index.html'].replace(/( |\t)*<\/body>/, `$1<script src='${name}'></script>\n$1</body>`)
+      saveFiles['index.html'] = saveFiles['index.html'].replace(/( |\t)*<\/body>/, `$1 <script src="${name}"></script>\n$1</body>`)
     }
 
     const activeTab = document.querySelector('.tab-active')
@@ -508,7 +527,7 @@ if (storage) {
         } else if (/^<link/i.test(node) && /rel[\r\n\t ]*=[\r\n\t ]*["']?stylesheet["']?/i.test(node)) {
           const hrefHead = node.match(/href[\r\n\t ]*=[\r\n\t ]*["']?/)
           if (hrefHead) {
-            let href = node.match(/[^\.`'"\/\\\[\]:;|=,]*\.css/)
+            let href = node.match(/[^`'"\/\\\[\]:;|=,]*\.css/)
             alert(node, href)
             if (href) {
               href = href[0]
@@ -520,7 +539,7 @@ if (storage) {
         } else if (/^<script/i.test(node) && (/type[\r\n\t ]*=[\r\n\t ]*["']?javascript["']?/i.test(node) || !/type[\r\n\t ]*=/i.test(node))) {
           const srcHead = node.match(/src[\r\n\t ]*=[\r\n\t ]*["']?/)
           if (srcHead) {
-            let src = node.match(/[^\.`'"\/\\\[\]:;|=,]*\.js/)
+            let src = node.match(/[^`'"\/\\\[\]:;|=,]*\.js/)
             if (src) {
               src = src[0]
             }
