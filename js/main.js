@@ -508,35 +508,38 @@ if (storage) {
         } else if (/^<link/i.test(node) && /rel[\r\n\t ]*=[\r\n\t ]*["']?stylesheet["']?/i.test(node)) {
           const hrefHead = node.match(/href[\r\n\t ]*=[\r\n\t ]*["']?/)
           if (hrefHead) {
-            let quort = hrefHead[0].charAt(0)
-            if (!/'|"/.test(quort)) { quort = ' ' }
-            let href = node.replace(/(?:href[\r\n\t ]*=[\r\n\t ]*["']?)/g, '')
-            href = href.split(quort, 1)[0]
-            if (!/(?:https?:)?\/\//.href) {
+            let href = node.match(/[^\.`'"\/\\\[\]:;|=,]*\.js/)
+            if (href) {
+              href = href[0]
+            }
+            if (!/(?:https?:)?\/\//.test(href)) {
               replace = `<style>${files[href]}</style>`
             }
           }
         } else if (/^<script/i.test(node) && (/type[\r\n\t ]*=[\r\n\t ]*["']?javascript["']?/i.test(node) || !/type[\r\n\t ]*=/i.test(node))) {
           const srcHead = node.match(/src[\r\n\t ]*=[\r\n\t ]*["']?/)
           if (srcHead) {
-            let quort = srcHead[0].charAt(0)
-            if (!/'|"/.test(quort)) { quort = ' ' }
-            let src = node.replace(/(?:src[\r\n\t ]*=[\r\n\t ]*["']?)/g, '')
-            src = src.split(quort, 1)[0]
-            if (!/(?:https?:)?\/\//.src) {
+            let src = node.match(/[^\.`'"\/\\\[\]:;|=,]*\.js/)
+            if (src) {
+              src = src[0]
+            }
+            if (!/(?:https?:)?\/\//.test(src)) {
               replace = `<script>${saveFiles[src]}</script>`
+              alert(saveFiles[src])
             }
           }
         }
       }
 
       for (const file in saveFiles) {
-        if (replace.charAt(0) === '<') {
-          const fileReg = new RegExp(file, 'g')
-          replace = replace.replace(fileReg, saveFiles[file])
-        } else {
-          const fileReg = new RegExp(`["'\`]${file}["'\`]`, 'g')
-          replace = replace.replace(fileReg, saveFiles[file])
+        if (/(jpeg|jpg|png|gif)$/i.test(file)) {
+          if (replace.charAt(0) === '<') {
+            const fileReg = new RegExp(file, 'g')
+            replace = replace.replace(fileReg, saveFiles[file])
+          } else {
+            const fileReg = new RegExp(`["'\`]${file}["'\`]`, 'g')
+            replace = replace.replace(fileReg, saveFiles[file])
+          }
         }
       }
 
