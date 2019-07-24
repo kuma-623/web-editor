@@ -508,12 +508,13 @@ if (storage) {
         } else if (/^<link/i.test(node) && /rel[\r\n\t ]*=[\r\n\t ]*["']?stylesheet["']?/i.test(node)) {
           const hrefHead = node.match(/href[\r\n\t ]*=[\r\n\t ]*["']?/)
           if (hrefHead) {
-            let href = node.match(/[^\.`'"\/\\\[\]:;|=,]*\.js/)
+            let href = node.match(/[^\.`'"\/\\\[\]:;|=,]*\.css/)
+            alert(node, href)
             if (href) {
               href = href[0]
             }
             if (!/(?:https?:)?\/\//.test(href)) {
-              replace = `<style>${files[href]}</style>`
+              replace = `<style>${saveFiles[href]}</style>`
             }
           }
         } else if (/^<script/i.test(node) && (/type[\r\n\t ]*=[\r\n\t ]*["']?javascript["']?/i.test(node) || !/type[\r\n\t ]*=/i.test(node))) {
