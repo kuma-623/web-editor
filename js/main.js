@@ -328,16 +328,28 @@ if (storage) {
       saveFiles[value] = editor.value
 
 
-      const ext = beforeName.split('.').pop().toLowerCase()
-      if (ext === 'css') {
+      const beforeExt = beforeName.split('.').pop().toLowerCase()
+      if (beforeExt === 'css') {
         const exp = new RegExp(`( |\t)*<link rel="stylesheet" href="${beforeName}">\n`)
         saveFiles['index.html'] = saveFiles['index.html'].replace(exp, '')
-      } else if (ext === 'js') {
+      } else if (beforeExt === 'js') {
         const exp = new RegExp(`( |\t)*<script src="${beforeName}"><\/script>\n`)
         saveFiles['index.html'] = saveFiles['index.html'].replace(exp, '')
       }
       insertTag(value)
 
+
+      const ext = value.split('.').pop().toLowerCase()
+      switch (ext) {
+        case 'html':
+        case 'js':
+        case 'css':
+        case 'json':
+          editor.mode = ext
+          break
+        default:
+          editor.mode = 'text'
+      }
       beforeName = value
     }
   }
@@ -565,12 +577,43 @@ if (storage) {
     return res
   }
 
+
+  function testClose(test) {
+    return () => {
+      test.remove()
+    }
+  }
+
+
   // 実行
   const run = document.getElementById('run')
   run.addEventListener('click', () => {
     const res = build()
     const url = URL.createObjectURL(new Blob([res], { type: 'text/html' }))
-    location.href = url
+    // location.href = url
+    const test = document.createElement('div')
+    test.classList.add('test')
+    const iframe = document.createElement('iframe')
+    iframe.classList.add('test-run')
+    iframe.frameborder = 'no'
+    iframe.src = url
+    const close = document.createElement('button')
+    close.classList.add('test-close')
+    const i = document.createElement('i')
+    i.classList.add('material-icons')
+    i.textContent = 'clear'
+    close.appendChild(i)
+
+    close.addEventListener('click', testClose(test))
+    test.addEventListener('click', e => e.stopPropagation())
+    test.addEventListener('keydown', e => e.stopPropagation())
+    test.addEventListener('mousedown', e => e.stopPropagation())
+    test.addEventListener('touchstart', e => e.stopPropagation())
+
+    test.appendChild(iframe)
+    test.appendChild(close)
+    document.body.appendChild(test)
+    iframe.focus()
   })
 
   // パス変換ツール
@@ -583,6 +626,7 @@ if (storage) {
   buildButton.addEventListener('click', () => {
     const res = build()
     const url = URL.createObjectURL(new Blob([res], { type: 'text/html' }))
+
     const a = document.createElement('a')
     a.href = url
     a.download = 'index.html'
